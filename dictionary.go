@@ -50,9 +50,14 @@ func getDefinition(word string) string {
 	req.Header.Set("app_key", appKey)
 
 	resp, err := client.Do(req)
-	if err != nil || resp.StatusCode != http.StatusOK {
+	if err != nil {
 		log.Println("Response issue: ", err)
 		return "No definition Found."
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		suggest := grammarChecker(word, "en-gb")
+		return suggest
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(result)

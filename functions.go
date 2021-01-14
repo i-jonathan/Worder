@@ -3,9 +3,11 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/pkg/errors"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -105,4 +107,60 @@ func respond(chatID int64, response string) error {
 	}
 
 	return nil
+}
+
+type spellCheck struct {
+	Matches	[]matches	`json:"matches"`
+}
+
+type matches struct {
+	Replacements	[]replacement	`json:"replacements"`
+}
+
+type replacement struct {
+	Value	string	`json:"value"`
+}
+
+func grammarChecker(word, lang string) string {
+	apiUrl := "https://grammarbot.p.rapidapi.com/check"
+	payload :=strings.NewReader(fmt.Sprintf("text=%s&language=%s", word, lang))
+
+	client := &http.Client{}
+	grammar := &spellCheck{}
+
+	req, err := http.NewRequest("POST", apiUrl, payload)
+	if err != nil {
+		log.Println("Grammar checker issue ", err)
+		return "Check your spelling and retry."
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("x-rapidapi-key", os.Getenv("grammarKey"))
+	req.Header.Set("x-rapidapi-host", os.Getenv("grammarHost"))
+
+	resp, err := client.Do(req)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		log.Println("No suggestions: ", err)
+		return "No suggestions."
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(grammar)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		log.Println("Json decoder issue in grammar check: ", err)
+		return "No Suggestions Found"
+	}
+
+	limit := 7
+	count := 0
+	suggestions := "Suggestions:"
+
+	if len(grammar.Matches[0].Replacements) < limit {
+		limit = len(grammar.Matches[0].Replacements)
+	}
+
+	for count < limit {
+		suggestions += grammar.Matches[0].Replacements[count].Value + ","
+	}
+
+	return suggestions
 }

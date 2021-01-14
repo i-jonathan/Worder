@@ -50,9 +50,9 @@ func getDefinition(word string) string {
 	req.Header.Set("app_key", appKey)
 
 	resp, err := client.Do(req)
-	if err != nil {
+	if err != nil || resp.StatusCode != http.StatusOK {
 		log.Println("Response issue: ", err)
-		return "No definition Found"
+		return "No definition Found."
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(result)
@@ -114,10 +114,10 @@ func getUrbanDefinition(word string) string {
 	}
 
 	i := 0
-	for i < 6 {
+	for i < 5 {
 		definition += "\n" + strconv.Itoa(i+1) + ". " + urbanResponse.List[i].Definition
 		i ++
 	}
 
-	return definition + "\n\nCheck " + urbanUrl + "for more."
+	return definition + "\n\nCheck " + urbanUrl + " for more."
 }

@@ -30,9 +30,9 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 	log.Println(len(parts))
-	command := parts[0]
 	switch len(parts) {
 	case 1:
+		command := parts[0]
 		switch command {
 		case "/start":
 			welcomeMessage := "Hi.\nWelcome to Worder.\n\n" + helpText

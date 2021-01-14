@@ -32,7 +32,10 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 	}
 	log.Println(len(parts))
 	command := parts[0]
-	word := parts[1]
+	word := ""
+	if len(parts) == 2 {
+		word = parts[1]
+	}
 
 	if command == "/start" {
 		welcomeMessage := "Hi.\nWelcome to Worder.\nTo get a definition, send an english word(en-gb) without unnecessary punctuations"

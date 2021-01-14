@@ -1,1 +1,1 @@
-web: bin/dict-bot
+web: bin/main

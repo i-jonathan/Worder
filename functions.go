@@ -52,6 +52,7 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 			}
 		}
 	case 2:
+		command := parts[0]
 		word := parts[1]
 		switch command {
 		case "/urban":

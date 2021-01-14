@@ -28,40 +28,52 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 			log.Println("Error in sending message ", err)
 			return
 		}
-		return
 	}
 	log.Println(len(parts))
 	command := parts[0]
-	word := ""
-	if len(parts) == 2 {
-		word = parts[1]
-	}
-
-	if command == "/start" {
-		welcomeMessage := "Hi.\nWelcome to Worder.\nTo get a definition, send an english word(en-gb) without unnecessary punctuations"
-		if err := respond(body.Message.Chat.ID, welcomeMessage); err != nil {
-			log.Println("Error in sending message ", err)
-			return
+	switch len(parts) {
+	case 1:
+		switch command {
+		case "/start":
+			welcomeMessage := "Hi.\nWelcome to Worder.\n\n" + helpText
+			if err := respond(body.Message.Chat.ID, welcomeMessage); err != nil {
+				log.Println("Error in sending message ", err)
+				return
+			}
+		case "/help":
+			if err := respond(body.Message.Chat.ID, helpText); err != nil {
+				log.Println("Error in sending message ", err)
+				return
+			}
+		default:
+			if err := respond(body.Message.Chat.ID, helpText); err != nil {
+				log.Println("Error in sending message ", err)
+				return
+			}
 		}
-	} else if command == "/help" {
+	case 2:
+		word := parts[1]
+		switch command {
+		case "/urban":
+			definition := getUrbanDefinition(word)
+			if err := respond(body.Message.Chat.ID, definition); err != nil {
+				log.Println("Error in sending message ", err)
+				return
+			}
+		case "/english":
+			definition := getDefinition(word)
+			if err := respond(body.Message.Chat.ID, definition); err != nil {
+				log.Println("Error in sending message ", err)
+				return
+			}
+		default:
+			if err := respond(body.Message.Chat.ID, helpText); err != nil {
+				log.Println("Error in sending message ", err)
+				return
+			}
+		}
+	default:
 		if err := respond(body.Message.Chat.ID, helpText); err != nil {
-			log.Println("Error in sending message ", err)
-			return
-		}
-	} else if command == "/english" {
-		definition := getDefinition(word)
-		if err := respond(body.Message.Chat.ID, definition); err != nil {
-			log.Println("Error in sending message ", err)
-			return
-		}
-	} else if command == "/urban" {
-		definition := getUrbanDefinition(word)
-		if err := respond(body.Message.Chat.ID, definition); err != nil {
-			log.Println("Error in sending message ", err)
-			return
-		}
-	} else {
-		if err := respond(body.Message.Chat.ID, "Unsupported format\n\n" + helpText); err != nil {
 			log.Println("Error in sending message ", err)
 			return
 		}

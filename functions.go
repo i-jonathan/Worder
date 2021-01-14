@@ -21,6 +21,8 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 	helpText := "Supported commands:\n/english word - Define word with British English Dictionary\n/urban word " +
 		"- Define word with Urban Dictionary\n/help - Display this help text"
 
+	log.Println(len(parts))
+
 	if len(parts) > 2 {
 		if err := respond(body.Message.Chat.ID, "Please check your message and resend"); err != nil {
 			log.Println("Error in sending message ", err)
@@ -28,6 +30,7 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 		}
 		return
 	}
+	log.Println(len(parts))
 	command := parts[0]
 	word := parts[1]
 

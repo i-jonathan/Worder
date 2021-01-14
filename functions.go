@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func handler(_ http.ResponseWriter, req *http.Request) {
+func handler(resp http.ResponseWriter, req *http.Request) {
 	body := &webHookReqBody{}
 	if err := json.NewDecoder(req.Body).Decode(body); err != nil {
 		log.Println("Could not decode the request body ", err)

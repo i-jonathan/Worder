@@ -26,6 +26,7 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 			log.Println("Error in sending message ", err)
 			return
 		}
+		return
 	}
 	command := parts[0]
 	word := parts[1]

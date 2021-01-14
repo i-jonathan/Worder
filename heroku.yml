@@ -1,0 +1,6 @@
+build:
+  languages:
+    - go:1.14
+
+run:
+  web: dict-bot

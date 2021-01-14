@@ -29,7 +29,7 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
-	log.Println(len(parts))
+
 	switch len(parts) {
 	case 1:
 		command := parts[0]

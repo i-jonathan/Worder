@@ -114,7 +114,11 @@ func getUrbanDefinition(word string) string {
 	}
 
 	i := 0
-	for i < 5 {
+	max := 5
+	if len(urbanResponse.List) < 5 {
+		max = len(urbanResponse.List)
+	}
+	for i < max {
 		definition += "\n" + strconv.Itoa(i+1) + ". " + urbanResponse.List[i].Definition
 		i ++
 	}

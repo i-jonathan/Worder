@@ -3,11 +3,9 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/pkg/errors"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -18,7 +16,13 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	parts := strings.Fields(body.Message.Text)
+	go processRequest(body)
+
+}
+
+// process request
+func processRequest(update *webHookReqBody) {
+	parts := strings.Fields(update.Message.Text)
 
 	helpText := "Supported commands:\n/english word - Define word with British English Dictionary\n/urban word " +
 		"- Define word with Urban Dictionary\n/help - Display this help text"
@@ -26,7 +30,7 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 	log.Println(len(parts))
 
 	if len(parts) > 2 {
-		if err := respond(body.Message.Chat.ID, "Please check your message and resend"); err != nil {
+		if err := respond(update.Message.Chat.ID, "Please check your message and resend"); err != nil {
 			log.Println("Error in sending message ", err)
 			return
 		}
@@ -38,17 +42,17 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 		switch command {
 		case "/start":
 			welcomeMessage := "Hi.\nWelcome to Worder.\n\n" + helpText
-			if err := respond(body.Message.Chat.ID, welcomeMessage); err != nil {
+			if err := respond(update.Message.Chat.ID, welcomeMessage); err != nil {
 				log.Println("Error in sending message ", err)
 				return
 			}
 		case "/help":
-			if err := respond(body.Message.Chat.ID, helpText); err != nil {
+			if err := respond(update.Message.Chat.ID, helpText); err != nil {
 				log.Println("Error in sending message ", err)
 				return
 			}
 		default:
-			if err := respond(body.Message.Chat.ID, helpText); err != nil {
+			if err := respond(update.Message.Chat.ID, helpText); err != nil {
 				log.Println("Error in sending message ", err)
 				return
 			}
@@ -59,24 +63,24 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 		switch command {
 		case "/urban":
 			definition := getUrbanDefinition(word)
-			if err := respond(body.Message.Chat.ID, definition); err != nil {
+			if err := respond(update.Message.Chat.ID, definition); err != nil {
 				log.Println("Error in sending message ", err)
 				return
 			}
 		case "/english":
 			definition := getDefinition(word)
-			if err := respond(body.Message.Chat.ID, definition); err != nil {
+			if err := respond(update.Message.Chat.ID, definition); err != nil {
 				log.Println("Error in sending message ", err)
 				return
 			}
 		default:
-			if err := respond(body.Message.Chat.ID, helpText); err != nil {
+			if err := respond(update.Message.Chat.ID, helpText); err != nil {
 				log.Println("Error in sending message ", err)
 				return
 			}
 		}
 	default:
-		if err := respond(body.Message.Chat.ID, helpText); err != nil {
+		if err := respond(update.Message.Chat.ID, helpText); err != nil {
 			log.Println("Error in sending message ", err)
 			return
 		}
@@ -121,7 +125,7 @@ type replacement struct {
 	Value	string	`json:"value"`
 }
 
-func grammarChecker(word, lang string) string {
+/* func grammarChecker(word, lang string) string {
 	apiUrl := "https://grammarbot.p.rapidapi.com/check"
 	payload :=strings.NewReader(fmt.Sprintf("text=%s&language=%s", word, lang))
 
@@ -163,4 +167,4 @@ func grammarChecker(word, lang string) string {
 	}
 
 	return suggestions
-}
+} */

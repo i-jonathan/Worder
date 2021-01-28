@@ -7,15 +7,15 @@ import (
 )
 
 type webHookReqBody struct {
-	Message Message `json:"message"`
+	Message message `json:"message"`
 }
 
-type Message struct {
+type message struct {
 	Text string `json:"text"`
-	Chat Chat   `json:"chat"`
+	Chat chat   `json:"chat"`
 }
 
-type Chat struct {
+type chat struct {
 	ID int64 `json:"id"`
 }
 

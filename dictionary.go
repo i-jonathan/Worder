@@ -11,42 +11,42 @@ import (
 )
 
 type oxford struct {
-	Results []Results `json:"results"`
+	Results []results `json:"results"`
 }
 
-type Senses struct {
+type senses struct {
 	Definitions []string `json:"definitions"`
 }
 
-type Entries struct {
-	Senses []Senses `json:"senses"`
+type entries struct {
+	Senses []senses `json:"senses"`
 }
 
-type LexicalEntries struct {
-	Entries []Entries `json:"entries"`
+type lexicalEntries struct {
+	Entries []entries `json:"entries"`
 }
 
-type Results struct {
-	LexicalEntries []LexicalEntries `json:"lexicalEntries"`
+type results struct {
+	LexicalEntries []lexicalEntries `json:"lexicalEntries"`
 }
 
 func getDefinition(word string) string {
 	appKey := os.Getenv("appKey")
-	appId := os.Getenv("appId")
-	baseUrl := "https://od-api.oxforddictionaries.com/api/v2"
+	appID := os.Getenv("appId")
+	baseURL := "https://od-api.oxforddictionaries.com/api/v2"
 	lang := "en-gb"
 
-	fullUrl := fmt.Sprintf("%s/entries/%s/%s", baseUrl, lang, strings.ToLower(word))
+	fullURL := fmt.Sprintf("%s/entries/%s/%s", baseURL, lang, strings.ToLower(word))
 
 	result := &oxford{}
 	client := &http.Client{}
 
-	req, err := http.NewRequest("GET", fullUrl, nil)
+	req, err := http.NewRequest("GET", fullURL, nil)
 	if err != nil {
 		log.Println("Get request to dictionary failed: ", err)
 		return ""
 	}
-	req.Header.Set("app_id", appId)
+	req.Header.Set("app_id", appID)
 	req.Header.Set("app_key", appKey)
 
 	resp, err := client.Do(req)
@@ -55,10 +55,10 @@ func getDefinition(word string) string {
 		return "No definition Found."
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		suggest := grammarChecker(word, "en-gb")
-		return suggest
-	}
+	// if resp.StatusCode != http.StatusOK {
+	// 	suggest := grammarChecker(word, "en-gb")
+	// 	return suggest
+	// }
 
 	err = json.NewDecoder(resp.Body).Decode(result)
 	if err != nil {
@@ -97,7 +97,7 @@ type list struct {
 
 func getUrbanDefinition(word string) string {
 	url := "https://mashape-community-urban-dictionary.p.rapidapi.com/define?term=" + word
-	urbanUrl := "https://www.urbandictionary.com/define.php?term=" + word
+	urbanURL := "https://www.urbandictionary.com/define.php?term=" + word
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -128,5 +128,5 @@ func getUrbanDefinition(word string) string {
 		i ++
 	}
 
-	return definition + "\n\nCheck " + urbanUrl + " for more."
+	return definition + "\n\nCheck " + urbanURL + " for more."
 }

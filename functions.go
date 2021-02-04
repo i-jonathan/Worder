@@ -89,7 +89,7 @@ func processRequest(update *webHookReqBody) {
 		word := ""
 
 		for i := 1; i < len(parts); i++ {
-			word += parts[i]
+			word += parts[i] + " "
 		}
 		switch command {
 			case "/urban":

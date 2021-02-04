@@ -112,7 +112,7 @@ func getUrbanDefinition(word string) string {
 	}
 
 	urbanResponse := &urban{}
-	definition := "Definitions:"
+	definition := "Definition(s):"
 	err = json.NewDecoder(resp.Body).Decode(urbanResponse)
 	if err != nil {
 		return "Something is wrong on our end. Check back in a bit."
@@ -120,6 +120,10 @@ func getUrbanDefinition(word string) string {
 
 	i := 0
 	max := 5
+
+	if len(urbanResponse.List) == 0 {
+		return "No definitions found."
+	}
 	if len(urbanResponse.List) < 5 {
 		max = len(urbanResponse.List)
 	}

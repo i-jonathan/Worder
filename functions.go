@@ -144,10 +144,11 @@ func grammarChecker(word string, entryCount int) string {
 		return "Something is wrong on our end. Give us a few."
 	}
 
-	words := "Did you mean: "
+	words := "No definition found.\nDid you mean any of these words?\n"
+	count := 1
 
 	for _, suggestion := range suggested.Suggestions {
-		words += suggestion + "; "
+		words += fmt.Sprintf("%d. %s\n", count, suggestion)
 	}
 
 	return words

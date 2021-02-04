@@ -30,14 +30,12 @@ func processRequest(update *webHookReqBody) {
 	helpText := "Supported commands:\n/english word - Define word with British English Dictionary\n/urban word " +
 		"- Define word with Urban Dictionary\n/help - Display this help text"
 
-	log.Println(len(parts))
-
-	if len(parts) > 2 {
-		if err := respond(update.Message.Chat.ID, "Please check your message and resend"); err != nil {
-			log.Println("Error in sending message ", err)
-			return
-		}
-	}
+	// if len(parts) > 2 {
+	// 	if err := respond(update.Message.Chat.ID, "Please check your message and resend"); err != nil {
+	// 		log.Println("Error in sending message ", err)
+	// 		return
+	// 	}
+	// }
 
 	switch len(parts) {
 	case 1:
@@ -83,9 +81,28 @@ func processRequest(update *webHookReqBody) {
 			}
 		}
 	default:
-		if err := respond(update.Message.Chat.ID, helpText); err != nil {
-			log.Println("Error in sending message ", err)
-			return
+		// if err := respond(update.Message.Chat.ID, helpText); err != nil {
+		// 	log.Println("Error in sending message ", err)
+		// 	return
+		// }
+		command := parts[0]
+		word := ""
+
+		for i := 1; i < len(parts); i++ {
+			word += parts[i]
+		}
+		switch command {
+			case "/urban":
+				definition := getUrbanDefinition(word)
+				if err := respond(update.Message.Chat.ID, definition); err != nil {
+					log.Println("Error in sending message ", err)
+					return
+				}
+			default:
+				if err := respond(update.Message.Chat.ID, helpText); err != nil {
+					log.Println("Error in sending message ", err)
+					return
+				}
 		}
 	}
 
@@ -149,6 +166,7 @@ func grammarChecker(word string, entryCount int) string {
 
 	for _, suggestion := range suggested.Suggestions {
 		words += fmt.Sprintf("%d. %s\n", count, suggestion)
+		count ++
 	}
 
 	return words

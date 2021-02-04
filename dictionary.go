@@ -55,7 +55,7 @@ func getDefinition(word string) string {
 		return "No definition Found."
 	}
 
-	if resp.StatusCode != http.StatusNotFound {
+	if resp.StatusCode == http.StatusNotFound {
 		suggest := grammarChecker(word, 5)
 		return suggest
 	}

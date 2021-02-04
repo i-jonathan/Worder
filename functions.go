@@ -3,10 +3,13 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/pkg/errors"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 func handler(resp http.ResponseWriter, req *http.Request) {
@@ -113,58 +116,39 @@ func respond(chatID int64, response string) error {
 	return nil
 }
 
-type spellCheck struct {
-	Matches	[]matches	`json:"matches"`
+type grammarSuggestions struct {
+	Suggestions    []string `json:"suggestions"`
 }
 
-type matches struct {
-	Replacements	[]replacement	`json:"replacements"`
-}
-
-type replacement struct {
-	Value	string	`json:"value"`
-}
-
-/* func grammarChecker(word, lang string) string {
-	apiUrl := "https://grammarbot.p.rapidapi.com/check"
-	payload :=strings.NewReader(fmt.Sprintf("text=%s&language=%s", word, lang))
-
+func grammarChecker(word string, entryCount int) string {
+	url := fmt.Sprintf("https://api.collinsdictionary.com/api/v1/dictionaries/english/search/didyoumean?q=%s&entrynumber=%d", word, entryCount)
 	client := &http.Client{}
-	grammar := &spellCheck{}
 
-	req, err := http.NewRequest("POST", apiUrl, payload)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Println("Grammar checker issue ", err)
-		return "Check your spelling and retry."
+		return "No definitions or suggestions found."
 	}
 
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("x-rapidapi-key", os.Getenv("grammarKey"))
-	req.Header.Set("x-rapidapi-host", os.Getenv("grammarHost"))
+	req.Header.Set("accessKey", os.Getenv("accessKey"))
 
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode != http.StatusOK {
-		log.Println("No suggestions: ", err)
-		return "No suggestions."
+		return "No definitions or suggestions found."
 	}
 
-	err = json.NewDecoder(resp.Body).Decode(grammar)
-	if err != nil || resp.StatusCode != http.StatusOK {
-		log.Println("Json decoder issue in grammar check: ", err)
-		return "No Suggestions Found"
+	suggested := &grammarSuggestions{}
+
+	err = json.NewDecoder(resp.Body).Decode(suggested)
+
+	if err != nil {
+		return "Something is wrong on our end. Give us a few."
 	}
 
-	limit := 7
-	count := 0
-	suggestions := "Suggestions:"
+	words := "Did you mean: "
 
-	if len(grammar.Matches[0].Replacements) < limit {
-		limit = len(grammar.Matches[0].Replacements)
+	for _, suggestion := range suggested.Suggestions {
+		words += suggestion + "; "
 	}
 
-	for count < limit {
-		suggestions += grammar.Matches[0].Replacements[count].Value + ","
-	}
-
-	return suggestions
-} */
+	return words
+}

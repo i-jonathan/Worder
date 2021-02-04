@@ -55,10 +55,10 @@ func getDefinition(word string) string {
 		return "No definition Found."
 	}
 
-	// if resp.StatusCode != http.StatusOK {
-	// 	suggest := grammarChecker(word, "en-gb")
-	// 	return suggest
-	// }
+	if resp.StatusCode != http.StatusNotFound {
+		suggest := grammarChecker(word, 5)
+		return suggest
+	}
 
 	err = json.NewDecoder(resp.Body).Decode(result)
 	if err != nil {
@@ -66,7 +66,7 @@ func getDefinition(word string) string {
 		return "Something is wrong on our end. Check back in a bit."
 	}
 
-	definition := "Definitions:"
+	definition := "Definition(s):"
 
 	count := 1
 

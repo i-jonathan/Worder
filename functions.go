@@ -27,10 +27,12 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 func processRequest(update *webHookReqBody) {
 	parts := strings.Fields(update.Message.Text)
 
+	var command string
+
 	if len(parts) > 0 {
-		if body.Message.Chat.Type != "private" && strings.HasSuffix(parts[0], "random_dict_bot") {
+		if update.Message.Chat.Type != "private" && strings.HasSuffix(parts[0], "random_dict_bot") {
 			command = strings.Split(parts[0], "@")[0]
-		} else if body.Message.Chat.Type == "private" {
+		} else if update.Message.Chat.Type == "private" {
 			command = parts[0]
 		} else {
 			return

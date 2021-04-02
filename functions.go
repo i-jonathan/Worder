@@ -44,7 +44,6 @@ func processRequest(update *webHookReqBody) {
 		
 	switch len(parts) {
 	case 1:
-		command := parts[0]
 		switch command {
 		case "/start":
 			welcomeMessage := "Hi.\nWelcome to Worder.\n\n" + helpText
@@ -64,7 +63,6 @@ func processRequest(update *webHookReqBody) {
 			}
 		}
 	case 2:
-		command := parts[0]
 		word := parts[1]
 		switch command {
 		case "/urban":
@@ -90,7 +88,6 @@ func processRequest(update *webHookReqBody) {
 		// 	log.Println("Error in sending message ", err)
 		// 	return
 		// }
-		command := parts[0]
 		word := ""
 
 		for i := 1; i < len(parts); i++ {

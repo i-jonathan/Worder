@@ -27,16 +27,19 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 func processRequest(update *webHookReqBody) {
 	parts := strings.Fields(update.Message.Text)
 
+	if len(parts) > 0 {
+		if body.Message.Chat.Type != "private" && strings.HasSuffix(parts[0], "random_dict_bot") {
+			command = strings.Split(parts[0], "@")[0]
+		} else if body.Message.Chat.Type == "private" {
+			command = parts[0]
+		} else {
+			return
+		}
+	}
+
 	helpText := "Supported commands:\n/english word - Define word with British English Dictionary\n/urban word " +
 		"- Define word with Urban Dictionary\n/help - Display this help text"
-
-	// if len(parts) > 2 {
-	// 	if err := respond(update.Message.Chat.ID, "Please check your message and resend"); err != nil {
-	// 		log.Println("Error in sending message ", err)
-	// 		return
-	// 	}
-	// }
-
+		
 	switch len(parts) {
 	case 1:
 		command := parts[0]

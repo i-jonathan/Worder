@@ -16,7 +16,8 @@ type message struct {
 }
 
 type chat struct {
-	ID int64 `json:"id"`
+	ID	 int64	`json:"id"`
+	Type string	`json:"type"`
 }
 
 type reply struct {

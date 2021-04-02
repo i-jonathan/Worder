@@ -98,6 +98,12 @@ func processRequest(update *webHookReqBody) {
 					log.Println("Error in sending message ", err)
 					return
 				}
+			case "/english":
+				definition := getDefinition(word)
+				if err := respond(update.Message.Chat.ID, definition); err != nil {
+					log.Println("Error in sending message ", err)
+					return
+				}
 			default:
 				if err := respond(update.Message.Chat.ID, helpText); err != nil {
 					log.Println("Error in sending message ", err)

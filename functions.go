@@ -12,7 +12,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func handler(resp http.ResponseWriter, req *http.Request) {
+func handler(_ http.ResponseWriter, req *http.Request) {
 	body := &webHookReqBody{}
 	if err := json.NewDecoder(req.Body).Decode(body); err != nil {
 		log.Println("Could not decode the request body ", err)
@@ -122,6 +122,7 @@ func respond(chatID int64, response string) error {
 	reqBody := &reply{
 		ChatID: chatID,
 		Text:   response,
+		ParseMode: "HTML",
 	}
 
 	reqBytes, err := json.Marshal(reqBody)

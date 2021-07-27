@@ -16,13 +16,14 @@ type message struct {
 }
 
 type chat struct {
-	ID	 int64	`json:"id"`
-	Type string	`json:"type"`
+	ID   int64  `json:"id"`
+	Type string `json:"type"`
 }
 
 type reply struct {
-	ChatID int64  `json:"chat_id"`
-	Text   string `json:"text"`
+	ChatID    int64  `json:"chat_id"`
+	Text      string `json:"text"`
+	ParseMode string `json:"parse_mode"`
 }
 
 var token = os.Getenv("token")

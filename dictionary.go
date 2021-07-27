@@ -52,7 +52,7 @@ func getDefinition(word string) string {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println("Response issue: ", err)
-		return "No definition Found."
+		return "<b>Entry:</b> " + strings.ToTitle(word) + "\nNo definition Found."
 	}
 
 	if resp.StatusCode == http.StatusNotFound {
@@ -66,7 +66,7 @@ func getDefinition(word string) string {
 		return "Something is wrong on our end. Check back in a bit."
 	}
 
-	definition := "Definition(s):"
+	definition := "<b>Entry:</b> " + strings.ToTitle(word) +"\n\n<b>Definition(s):</b>"
 
 	count := 1
 
@@ -108,11 +108,11 @@ func getUrbanDefinition(word string) string {
 
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode != http.StatusOK {
-		return "No definition found."
+		return "<b>Entry:</b> " + strings.ToTitle(word) + "\n\nNo definition found."
 	}
 
 	urbanResponse := &urban{}
-	definition := "Definition(s):"
+	definition := "<b>Entry:</b> " + strings.ToTitle(word) +"\n\n<b>Definition(s):</b>"
 	err = json.NewDecoder(resp.Body).Decode(urbanResponse)
 	if err != nil {
 		return "Something is wrong on our end. Check back in a bit."
@@ -122,7 +122,7 @@ func getUrbanDefinition(word string) string {
 	max := 5
 
 	if len(urbanResponse.List) == 0 {
-		return "No definitions found."
+		return "<b>Entry:</b> " + strings.ToTitle(word) + "\nNo definitions found."
 	}
 	if len(urbanResponse.List) < 5 {
 		max = len(urbanResponse.List)

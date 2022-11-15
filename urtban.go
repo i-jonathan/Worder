@@ -25,8 +25,8 @@ func getUrbanDefinition(word string) string {
 	if err != nil {
 		return ""
 	}
-	req.Header.Set("x-rapidapi-key", os.Getenv("x-rapidapi-key"))
-	req.Header.Set("x-rapidapi-host", os.Getenv("x-rapidapi-host"))
+	req.Header.Set("x-rapidapi-key", os.Getenv("x_rapidapi_key"))
+	req.Header.Set("x-rapidapi-host", os.Getenv("x_rapidapi_host"))
 
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode != http.StatusOK {

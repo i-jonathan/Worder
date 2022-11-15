@@ -31,6 +31,7 @@ var url = "https://api.telegram.org/bot" + token + "/"
 
 func main() {
 	//port := os.Getenv("PORT")
-	err := http.ListenAndServe(":"+"5000", http.HandlerFunc(handler))
+	log.Println("Starting Server")
+	err := http.ListenAndServe(":"+"8092", http.HandlerFunc(handler))
 	log.Println(err)
 }
